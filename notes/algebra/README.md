@@ -11,4 +11,4 @@ Files are named in `kebab-case-concept.md`.
 
 ## Cross-links
 
-- For linear maps and transformations, see [`../../../linear-algebra/`](../../../linear-algebra/).
+- For linear maps and transformations, see [`../../linear-algebra/`](../../linear-algebra/).
