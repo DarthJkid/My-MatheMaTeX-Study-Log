@@ -1,0 +1,41 @@
+% preamble.tex — shared LaTeX preamble
+%
+% Include in any .tex file with:
+%   \input{preamble}
+%
+% The compile-latex workflow adds the repository root to Tectonic's
+% search path, so this file is findable from any subdirectory without
+% needing a relative path.
+
+% --- Typography & layout -----------------------------------------------
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+
+% --- Mathematics --------------------------------------------------------
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+
+% --- Hyperlinks ---------------------------------------------------------
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = blue,
+  citecolor  = blue,
+  urlcolor   = blue,
+}
+
+% --- Theorem environments -----------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{note}[theorem]{Note}

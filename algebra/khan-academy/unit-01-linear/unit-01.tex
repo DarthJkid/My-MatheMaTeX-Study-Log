@@ -1,0 +1,91 @@
+\documentclass{article}
+
+% Shared preamble — found via Tectonic's --search-path set to the repo root.
+\input{preamble}
+
+% Bibliography (natbib + BibTeX; path relative to this file's directory)
+\usepackage{natbib}
+
+\title{Unit 01: Linear Equations and Inequalities}
+\author{My-MatheMaTeX Study Log}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% -----------------------------------------------------------------------
+\section{Overview}
+
+This unit covers linear equations and inequalities from the Khan Academy
+Algebra course \citep{khanacademy}.
+We state definitions precisely and prove the key uniqueness theorem.
+
+% -----------------------------------------------------------------------
+\section{Linear Equations in One Variable}
+
+\begin{definition}
+  A \textbf{linear equation in one variable} $x$ is an equation of the form
+  \[
+    ax + b = 0, \qquad a, b \in \mathbb{R},\ a \neq 0.
+  \]
+\end{definition}
+
+\begin{theorem}[Unique Solution]\label{thm:unique}
+  A linear equation $ax + b = 0$ with $a \neq 0$ has exactly one solution,
+  namely
+  \[
+    x = -\frac{b}{a}.
+  \]
+\end{theorem}
+
+\begin{proof}
+  Subtracting $b$ from both sides gives $ax = -b$.
+  Since $a \neq 0$, dividing both sides by $a$ is valid and yields
+  $x = -b/a$.
+  To see uniqueness, suppose $ax + b = 0$ and $ay + b = 0$.
+  Subtracting gives $a(x - y) = 0$; since $a \neq 0$ we conclude $x = y$.
+\end{proof}
+
+% -----------------------------------------------------------------------
+\section{Linear Inequalities}
+
+\begin{definition}
+  A \textbf{linear inequality in one variable} $x$ is a relation of the form
+  \[
+    ax + b \;\square\; 0,
+  \]
+  where $\square \in \{<,\leq,>,\geq\}$ and $a \neq 0$.
+\end{definition}
+
+\begin{note}
+  When multiplying or dividing both sides of an inequality by a
+  \emph{negative} number, the direction of the inequality reverses.
+\end{note}
+
+% -----------------------------------------------------------------------
+\section{Worked Exercises}
+
+\begin{exercise}
+  Solve $3x - 7 = 2$.
+\end{exercise}
+
+\textit{Solution.}
+$3x = 9 \implies x = 3$. By Theorem~\ref{thm:unique} this is the unique
+solution. \qed
+
+\begin{exercise}
+  Solve $-2x + 4 \geq 10$.
+\end{exercise}
+
+\textit{Solution.}
+$-2x \geq 6 \implies x \leq -3$ (inequality flips when dividing by $-2$).
+The solution set is $(-\infty, -3]$. \qed
+
+% -----------------------------------------------------------------------
+\bibliographystyle{plainnat}
+\bibliography{../../../bibliography/references}
+
+\end{document}

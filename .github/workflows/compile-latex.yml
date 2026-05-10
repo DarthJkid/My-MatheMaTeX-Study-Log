@@ -1,0 +1,75 @@
+name: Compile LaTeX
+
+# Trigger on every push to main that touches a .tex file.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.tex'
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed to push to pdf-exports branch
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Tectonic
+        uses: wtfjoke/setup-tectonic@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Compile every .tex file (except the shared preamble).
+      # Run tectonic from each file's own directory so that relative
+      # \input / \includegraphics paths inside the document resolve
+      # correctly. Pass the repo root as an extra search path so that
+      # \input{preamble} finds preamble.tex from any depth.
+      - name: Compile all .tex files
+        run: |
+          while IFS= read -r -d '' texfile; do
+            absfile="$(realpath "$texfile")"
+            dir="$(dirname "$absfile")"
+            echo "==> Compiling: $texfile"
+            (cd "$dir" && tectonic --search-path "$GITHUB_WORKSPACE" \
+              "$(basename "$absfile")") \
+              || echo "WARNING: failed to compile $texfile"
+          done < <(find . -name "*.tex" ! -name "preamble.tex" \
+                       ! -path "./.git/*" -print0)
+
+      # Collect all generated PDFs into a staging directory so we can
+      # push only the binaries to the dedicated pdf-exports branch,
+      # keeping main free of heavy binary commits.
+      - name: Collect compiled PDFs
+        run: |
+          mkdir -p /tmp/pdf-output
+          while IFS= read -r -d '' pdf; do
+            rel="${pdf#./}"
+            mkdir -p "/tmp/pdf-output/$(dirname "$rel")"
+            cp "$pdf" "/tmp/pdf-output/$rel"
+          done < <(find . -name "*.pdf" ! -path "./.git/*" -print0)
+
+      - name: Push PDFs to pdf-exports branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          cd /tmp/pdf-output
+          git init
+          git remote add origin \
+            "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+
+          # Always create a fresh orphan commit so the binary branch
+          # history stays flat (one commit = current state of all PDFs).
+          git checkout --orphan pdf-exports
+          git add -A
+          git commit -m "ci: compile PDFs from ${SHORT_SHA} [skip ci]" \
+            || { echo "No PDFs to commit."; exit 0; }
+          git push origin pdf-exports --force
